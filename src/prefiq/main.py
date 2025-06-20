@@ -16,9 +16,9 @@ def run_setup(version):
 
     # ✅ Run with bash on Windows
     if platform.system() == "Windows":
-        subprocess.run(["bash", setup_filename], check=True)
+        subprocess.run([setup_filename.replace(".sh", ".bat")], shell=True, check=True)
     else:
-        subprocess.run(["./" + setup_filename], check=True)
+        subprocess.run(["bash", setup_filename], check=True)
 
 
 def create_app(app_name):
