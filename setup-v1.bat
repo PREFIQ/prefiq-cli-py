@@ -9,7 +9,6 @@ if "%PROJECT_NAME%"=="" (
     exit /b 1
 )
 
-REM Create folder and change directory
 if exist "%PROJECT_NAME%" (
     echo ❌ Folder "%PROJECT_NAME%" already exists.
     exit /b 1
@@ -25,16 +24,24 @@ echo 🟢 Activating virtual environment...
 call venv\Scripts\activate.bat
 
 echo 📦 Installing Django...
-python -m pip install --upgrade pip setuptools
-pip install django
+python -m pip install --upgrade pip setuptools >nul
+pip install django >nul
 
 echo ⚙️ Creating Django project...
-django-admin startproject config .
+django-admin startproject config . >nul
 
 echo 🔧 Running migrations...
 python manage.py migrate
 
 echo 👤 Creating Django superuser with default credentials...
-python src\prefiq\create_superuser.py
+if exist setup\create_superuser.py (
+    python setup\create_superuser.py
+) else (
+    echo ⚠️  Skipping superuser creation: file 'setup\create_superuser.py' not found.
+)
 
-endlocal
+echo 🧹 Cleaning up setup script...
+cd ..
+del setup-v1.bat >nul 2>&1
+
+echo ✅ Project '%PROJECT_NAME%' setup completed!
