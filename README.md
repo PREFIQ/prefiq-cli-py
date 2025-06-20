@@ -1,2 +1,8 @@
-# prefiq-cli-py
-Build smarter, scale faster — with PREFIQ for python
+# Prefiq CLI
+
+A simple Python CLI to bootstrap Django projects.
+
+## Install
+
+```bash
+pip install -e .
