@@ -17,4 +17,5 @@ echo "🔧 Running migrations..."
 python manage.py migrate
 
 echo "👤 Creating Django superuser with default credentials..."
-python setup/create_superuser.py
+python src\prefiq\create_superuser.py
+
