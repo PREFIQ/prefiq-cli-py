@@ -209,10 +209,150 @@ You’re ready to use the `prefiq` CLI globally on any project.
 
 ---
 
-Would you like this:
+You're 100% right — earlier, `npm` installed a conflicting `prefiq` binary globally, and **it's still in your `PATH`**, possibly shadowing the Python one.
 
-* 📄 Saved as a `README.md`?
-* 🧷 Added to your repo?
-* 📦 Converted into a GitHub template?
+Let’s clean it properly.
 
-Let me know how you'd like to share or publish it.
+---
+
+## ✅ Step-by-Step: Remove `npm`'s CLI Conflict
+
+### 🔍 1. Check what's currently running for `prefiq`
+
+Run in **Git Bash** or **CMD**:
+
+```bash
+where prefiq
+```
+
+You’ll likely see something like:
+
+```
+C:\Users\SUNDAR\AppData\Roaming\npm\prefiq
+```
+
+This is the **old Node.js CLI** path.
+
+---
+
+### 🧼 2. Uninstall the npm version (if you haven’t already)
+
+```bash
+npm uninstall -g prefiq
+```
+
+---
+
+### 🔁 3. Manually delete leftover files (important)
+
+Even after uninstall, `npm` sometimes leaves behind stub files.
+
+Manually **delete**:
+
+```bash
+C:\Users\SUNDAR\AppData\Roaming\npm\prefiq
+C:\Users\SUNDAR\AppData\Roaming\npm\prefiq.cmd
+```
+
+You can do this via File Explorer or run:
+
+```bash
+del "%APPDATA%\npm\prefiq"
+del "%APPDATA%\npm\prefiq.cmd"
+```
+
+---
+
+### 🔃 4. Clear shell cache (if using Git Bash)
+
+```bash
+hash -r
+```
+
+Or just **restart your terminal**.
+
+---
+
+### ✅ 5. Verify the correct Python CLI is used
+
+Now run again:
+
+```bash
+where prefiq
+```
+
+You should now see:
+
+```
+C:\Users\SUNDAR\AppData\Roaming\Python\Python313\Scripts\prefiq.exe
+```
+
+That’s the correct Python CLI!
+
+Then try:
+
+```bash
+prefiq --version
+```
+
+✅ It should output:
+
+```
+Prefiq CLI v0.1.0
+```
+
+```
+prefiq-cli-py/
+├── src/
+│   ├── prefiq/
+│   │   ├── __init__.py
+│   │   ├── main.py
+│   │   └── add_to_path.py
+├── pyproject.toml
+```
+
+
+Now reinstall:
+
+```bash
+pip install -e . --use-pep517
+```
+
+python -m main install --version 1
+
+4. Available Commands
+🔹 Version
+bash
+Copy
+Edit
+prefiq --version
+🔹 Install Django Setup (From GitHub Script)
+bash
+Copy
+Edit
+prefiq install --version 1
+Runs setup-v1.sh from GitHub and installs Django in a virtual environment.
+
+🔹 Create a New App
+bash
+Copy
+Edit
+prefiq new-app blog
+Creates a Django app called blog.
+
+🔹 Run Local Server
+bash
+Copy
+Edit
+prefiq run
+Runs the Django dev server.
+
+git clone https://github.com/PREFIQ/prefiq-cli-py.git
+cd prefiq-cli-py
+
+
+pip uninstall prefiq-cli-py -y
+pip install -e . --use-pep517
+
+
+
