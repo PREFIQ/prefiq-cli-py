@@ -1,25 +1,25 @@
 import argparse, subprocess, sys
-from prefiq.add_to_path import add_to_user_path
 import os
+import platform
+from prefiq.add_to_path import add_to_user_path
 
 VERSION = "Prefiq CLI v0.1.0"
 
-import platform
-
 def run_setup(version):
-    setup_filename = f"setup-v{version}.sh"
+    is_windows = platform.system() == "Windows"
+    ext = ".bat" if is_windows else ".sh"
+    setup_filename = f"setup-v{version}{ext}"
     github_url = f"https://raw.githubusercontent.com/PREFIQ/prefiq-cli-py/main/{setup_filename}"
 
     print(f"📥 Downloading setup from: {github_url}")
     subprocess.run(["curl", "-fLo", setup_filename, github_url], check=True)
-    subprocess.run(["chmod", "+x", setup_filename], check=True)
 
-    # ✅ Run with bash on Windows
-    if platform.system() == "Windows":
-        subprocess.run([setup_filename.replace(".sh", ".bat")], shell=True, check=True)
+    print(f"▶️ Running setup script: {setup_filename}")
+    if is_windows:
+        subprocess.run([setup_filename], shell=True, check=True)
     else:
+        subprocess.run(["chmod", "+x", setup_filename], check=True)
         subprocess.run(["bash", setup_filename], check=True)
-
 
 def create_app(app_name):
     print(f"📦 Creating app: {app_name}")
