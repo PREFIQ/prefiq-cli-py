@@ -1,4 +1,6 @@
-import argparse, subprocess, sys
+import argparse
+import subprocess
+import sys
 import os
 import platform
 from prefiq.add_to_path import add_to_user_path
@@ -23,13 +25,30 @@ def run_setup(version):
 
 def create_app(app_name):
     print(f"📦 Creating app: {app_name}")
-    subprocess.run(["python", "manage.py", "startapp", app_name], check=True)
+    base_path = os.path.join(os.getcwd(), app_name)
+
+    try:
+        os.makedirs(base_path, exist_ok=False)
+    except FileExistsError:
+        print(f"❌ App '{app_name}' already exists.")
+        return
+
+    # Add basic app files
+    open(os.path.join(base_path, "__init__.py"), "w").close()
+
+    with open(os.path.join(base_path, "main.py"), "w") as f:
+        f.write(f'''def main():
+    print("Hello from {app_name}!")
+''')
+
+    print(f"✅ App '{app_name}' created at: {base_path}")
 
 def run_dev_server():
     print("🚀 Starting dev server...")
     subprocess.run(["python", "manage.py", "runserver"], check=True)
 
 def main():
+    # Manual version check
     if len(sys.argv) > 1 and sys.argv[1] in ["--version", "--v", "-v"]:
         print(VERSION)
         return
@@ -37,12 +56,15 @@ def main():
     parser = argparse.ArgumentParser(prog="prefiq", description="Prefiq CLI – Simple Setup Tool")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # install
     install_parser = subparsers.add_parser("install", help="Run setup script from GitHub")
     install_parser.add_argument("--version", default="1", help="Setup script version")
 
+    # new-app
     new_app_parser = subparsers.add_parser("new-app", help="Create a new app folder")
     new_app_parser.add_argument("name", help="App name")
 
+    # run
     run_parser = subparsers.add_parser("run", help="Run the development server")
 
     args = parser.parse_args()
