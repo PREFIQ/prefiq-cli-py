@@ -42,7 +42,8 @@ def run_setup(version, project_name):
 
     try:
         if is_windows:
-            subprocess.run([setup_filename], shell=True, check=True, env=env)
+            # Use the project_name as env var or pass to the .bat file
+            subprocess.run([setup_filename, project_name], shell=True, check=True)
         else:
             subprocess.run(["chmod", "+x", setup_filename], check=True)
             subprocess.run(["bash", setup_filename], check=True, env=env)
@@ -79,9 +80,10 @@ def main():
     parser = argparse.ArgumentParser(prog="prefiq", description="Prefiq CLI – Simple Setup Tool")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
+    # install
     install_parser = subparsers.add_parser("install", help="Run setup script from GitHub")
-    install_parser.add_argument("project_name", help="Name of the project")
-    install_parser.add_argument("--v", "--version", dest="version", default="1", help="Setup script version")
+    install_parser.add_argument("project", help="Project name")
+    install_parser.add_argument("--version", "--v", default="1", help="Setup script version")
 
     new_app_parser = subparsers.add_parser("new-app", help="Create a new app folder")
     new_app_parser.add_argument("name", help="App name")
@@ -91,7 +93,7 @@ def main():
     args = parser.parse_args()
 
     if args.command == "install":
-        run_setup(args.version, args.project_name)
+        run_setup(args.version, args.project)
     elif args.command == "new-app":
         create_app(args.name)
     elif args.command == "run":
