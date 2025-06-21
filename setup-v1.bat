@@ -1,43 +1,43 @@
 @echo off
 setlocal enabledelayedexpansion
 
-echo Enter your project name:
-set /p PROJECT_NAME=
-
+:: Use provided project name from environment variable
 if "%PROJECT_NAME%"=="" (
-    echo Project name cannot be empty.
+    echo [ERROR] Project name not provided.
     exit /b 1
 )
 
+:: Check if folder already exists
 if exist "%PROJECT_NAME%" (
-    echo Folder "%PROJECT_NAME%" already exists.
+    echo [ERROR] Folder "%PROJECT_NAME%" already exists.
     exit /b 1
 )
 
+echo [INFO] Creating project folder: %PROJECT_NAME%
 mkdir "%PROJECT_NAME%"
 cd "%PROJECT_NAME%"
 
-echo Creating virtual environment...
+echo [INFO] Creating virtual environment...
 python -m venv venv
 
-echo Activating virtual environment...
+echo [INFO] Activating virtual environment...
 call venv\Scripts\activate.bat
 
-echo Installing Django...
+echo [INFO] Installing Django...
 python -m pip install --upgrade pip setuptools >nul
 pip install django >nul
 
-echo Creating Django project...
+echo [INFO] Creating Django project...
 django-admin startproject config . >nul
 
-echo Running migrations...
+echo [INFO] Running migrations...
 python manage.py migrate
 
-echo Creating Django superuser with default credentials...
+echo [INFO] Creating Django superuser with default credentials...
 if exist prefiq\create_superuser.py (
     python prefiq\create_superuser.py
 ) else (
-    echo Skipping superuser creation: file 'prefiq\create_superuser.py' not found.
+    echo [WARN] Skipping superuser creation: 'prefiq\create_superuser.py' not found.
 )
 
-echo Project '%PROJECT_NAME%' setup completed!
+echo [SUCCESS] Project '%PROJECT_NAME%' setup completed!

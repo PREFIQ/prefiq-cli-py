@@ -1,42 +1,42 @@
 #!/bin/bash
 
-echo "📦 Enter your project name:"
-read PROJECT_NAME
-
+# Check if project name is passed via env
 if [ -z "$PROJECT_NAME" ]; then
-    echo "❌ Project name cannot be empty."
+    echo "[ERROR] Project name is not set. Use: prefiq install <project-name>"
     exit 1
 fi
 
+# Check for existing folder
 if [ -d "$PROJECT_NAME" ]; then
-    echo "❌ Folder '$PROJECT_NAME' already exists."
+    echo "[ERROR] Folder '$PROJECT_NAME' already exists."
     exit 1
 fi
 
+echo "[INFO] Creating project folder: $PROJECT_NAME"
 mkdir "$PROJECT_NAME"
 cd "$PROJECT_NAME" || exit 1
 
-echo "🚀 Creating virtual environment..."
+echo "[INFO] Creating virtual environment..."
 python3 -m venv venv
 
-echo "🟢 Activating virtual environment..."
+echo "[INFO] Activating virtual environment..."
 source venv/bin/activate
 
-echo "📦 Installing Django..."
+echo "[INFO] Installing Django..."
 python3 -m pip install --upgrade pip setuptools >/dev/null
 pip install django >/dev/null
 
-echo "⚙️ Creating Django project..."
+echo "[INFO] Creating Django project..."
 django-admin startproject config . >/dev/null
 
-echo "🔧 Running migrations..."
+echo "[INFO] Running migrations..."
 python3 manage.py migrate
 
-echo "👤 Creating Django superuser with default credentials..."
+echo "[INFO] Creating Django superuser with default credentials..."
 if [ -f prefiq/create_superuser.py ]; then
     python3 prefiq/create_superuser.py
 else
-    echo "⚠️  Skipping superuser creation: 'prefiq/create_superuser.py' not found."
+    echo "[WARN] Skipping superuser creation: 'prefiq/create_superuser.py' not found."
 fi
 
-echo "✅ Project '$PROJECT_NAME' setup completed!"
+echo "[SUCCESS] Project '$PROJECT_NAME' setup completed!"
