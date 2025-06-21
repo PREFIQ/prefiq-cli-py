@@ -39,8 +39,4 @@ else
     echo "⚠️  Skipping superuser creation: 'prefiq/create_superuser.py' not found."
 fi
 
-echo "🧹 Cleaning up setup script..."
-cd ..
-rm -f setup-v1.sh
-
 echo "✅ Project '$PROJECT_NAME' setup completed!"

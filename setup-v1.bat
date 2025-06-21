@@ -40,8 +40,4 @@ if exist prefiq\create_superuser.py (
     echo Skipping superuser creation: file 'prefiq\create_superuser.py' not found.
 )
 
-echo Cleaning up setup script...
-cd ..
-del setup-v1.bat >nul 2>&1
-
 echo Project '%PROJECT_NAME%' setup completed!
