@@ -34,23 +34,15 @@ echo [INFO] Running migrations...
 python manage.py migrate
 
 echo [INFO] Creating Django superuser with default credentials...
+echo from django.contrib.auth import get_user_model > create_superuser.py
+echo User = get_user_model() >> create_superuser.py
+echo if not User.objects.filter(username^="admin").exists(): >> create_superuser.py
+echo     User.objects.create_superuser("admin", "admin@example.com", "admin123") >> create_superuser.py
+echo     print("Superuser created: admin / admin123") >> create_superuser.py
+echo else: >> create_superuser.py
+echo     print("Superuser 'admin' already exists.") >> create_superuser.py
 
-mkdir prefiq >nul 2>&1
-
->prefiq\create_superuser.py (
-    echo import os
-    echo os.environ.setdefault^("DJANGO_SETTINGS_MODULE", "config.settings"^)
-    echo import django
-    echo django.setup^(^)
-    echo from django.contrib.auth import get_user_model
-    echo User = get_user_model^(^)
-    echo if not User.objects.filter^(username="admin"^).exists^(^):
-    echo     User.objects.create_superuser^("admin", "admin@example.com", "admin123"^)
-    echo     print^("Superuser created: admin / admin123"^)
-    echo else:
-    echo     print^("Superuser 'admin' already exists."^)
-)
-
-python prefiq\create_superuser.py
+python manage.py shell < create_superuser.py
+del create_superuser.py
 
 echo [SUCCESS] Project '%PROJECT_NAME%' setup completed.
