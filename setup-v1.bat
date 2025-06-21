@@ -36,10 +36,9 @@ echo [INFO] Running migrations...
 python manage.py migrate
 
 echo [INFO] Creating Django superuser with default credentials...
-
 mkdir prefiq >nul 2>&1
 
-:: Create the Python script to make the superuser
+:: Create Python script
 > prefiq\create_superuser.py (
     echo import os
     echo os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
