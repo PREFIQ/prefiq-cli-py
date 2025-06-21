@@ -18,10 +18,10 @@ def download_file(url, filename):
             if chunk:
                 f.write(chunk)
                 downloaded += len(chunk)
-                done = int(50 * downloaded / total) if total else 0
-                bar = f"[{'#' * done}{'.' * (50 - done)}]"
-                percent = int((downloaded / total) * 100) if total else 100
-                sys.stdout.write(f"\r{bar} {percent}%")
+                done = int(50 * downloaded / total) if total else 50
+                percent = min(100, int((downloaded / total) * 100)) if total else 100
+                bar = f"[{'#' * done}{'.' * (50 - done)}] {percent}%"
+                sys.stdout.write(f"\r{bar}")
                 sys.stdout.flush()
     sys.stdout.write("\n")
     print(f"Saved to: {filename}")
@@ -36,13 +36,11 @@ def run_setup(version, project_name):
     download_file(github_url, setup_filename)
 
     print(f"Running setup script: {setup_filename}")
-
     env = os.environ.copy()
     env["PROJECT_NAME"] = project_name
 
     try:
         if is_windows:
-            # Use the project_name as env var or pass to the .bat file
             subprocess.run([setup_filename, project_name], shell=True, check=True)
         else:
             subprocess.run(["chmod", "+x", setup_filename], check=True)
@@ -64,7 +62,7 @@ def create_app(app_name):
     open(os.path.join(base_path, "__init__.py"), "w").close()
     with open(os.path.join(base_path, "main.py"), "w") as f:
         f.write(f"""def main():
-    print(\"Hello from {app_name}!\")
+    print("Hello from {app_name}!")
 """)
     print(f"App '{app_name}' created at: {base_path}")
 
@@ -80,15 +78,17 @@ def main():
     parser = argparse.ArgumentParser(prog="prefiq", description="Prefiq CLI – Simple Setup Tool")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # install
+    # install command
     install_parser = subparsers.add_parser("install", help="Run setup script from GitHub")
     install_parser.add_argument("project", help="Project name")
-    install_parser.add_argument("--version", "--v", default="1", help="Setup script version")
+    install_parser.add_argument("--version", "-v", dest="version", default="1", help="Setup script version (default=1)")
 
+    # new-app
     new_app_parser = subparsers.add_parser("new-app", help="Create a new app folder")
     new_app_parser.add_argument("name", help="App name")
 
-    run_parser = subparsers.add_parser("run", help="Run the development server")
+    # run
+    subparsers.add_parser("run", help="Run the development server")
 
     args = parser.parse_args()
 
