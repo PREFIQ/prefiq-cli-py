@@ -55,4 +55,5 @@ echo.    print("Superuser 'admin' already exists.")
 
 python prefiq\create_superuser.py
 
+
 echo [SUCCESS] Project '%PROJECT_NAME%' setup completed
