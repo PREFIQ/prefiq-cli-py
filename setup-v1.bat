@@ -38,9 +38,6 @@ echo [INFO] Creating Django superuser with default credentials...
 mkdir prefiq >nul 2>&1
 
 (
-mkdir prefiq >nul 2>&1
-
-(
 echo import os
 echo os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
 echo import django
