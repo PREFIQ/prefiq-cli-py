@@ -30,7 +30,7 @@ def download_with_progress(url, filename):
                 downloaded += len(chunk)
                 done = int(50 * downloaded / total_length)
                 progress_bar = "#" * done + "-" * (50 - done)
-                print(f"\r[{progress_bar}] {downloaded * 100 // total_length}%", end="")
+                print(f"\r[{progress_bar}] {min(100, downloaded * 100 // total_length)}%", end="")
 
     print(f"\nSaved to: {filename}")
 
