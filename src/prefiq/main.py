@@ -4,23 +4,28 @@ import sys
 import os
 import platform
 import requests
-from prefiq.add_to_path import add_to_user_path
 
-VERSION = "Prefiq CLI v0.1.0"
+VERSION = "Prefiq CLI v0.1.1"
 
 def uninstall_old_version():
+    print("[INFO] Uninstalling old version of prefiq-cli-py...")
     try:
-        print("[INFO] Uninstalling old version of prefiq-cli-py...")
         subprocess.run(["pip", "uninstall", "prefiq-cli-py", "-y"], check=True)
     except subprocess.CalledProcessError:
-        print("[WARN] Unable to uninstall prefiq-cli-py. It may not be installed.")
+        print("[WARN] Could not uninstall prefiq-cli-py or it was not installed.")
 
 def install_latest_version():
+    print("[INFO] Installing latest version of prefiq-cli-py...")
     try:
-        print("[INFO] Installing latest version of prefiq-cli-py...")
         subprocess.run(["pip", "install", "--upgrade", "prefiq-cli-py"], check=True)
     except subprocess.CalledProcessError:
-        print("[ERROR] Failed to install latest version of prefiq-cli-py.")
+        print("[WARN] prefiq-cli-py not found on PyPI. Trying to install from GitHub...")
+        try:
+            subprocess.run([
+                "pip", "install", "--upgrade", "git+https://github.com/PREFIQ/prefiq-cli-py.git"
+            ], check=True)
+        except subprocess.CalledProcessError:
+            print("[ERROR] Failed to install latest version of prefiq-cli-py from GitHub.")
 
 def download_file(url, filename):
     response = requests.get(url, stream=True)
@@ -62,6 +67,8 @@ def run_setup(version, project_name):
         else:
             subprocess.run(["chmod", "+x", setup_filename], check=True)
             subprocess.run(["bash", setup_filename], check=True, env=env)
+    except subprocess.CalledProcessError as e:
+        print(f"[ERROR] Setup script failed: {e}")
     finally:
         if os.path.exists(setup_filename):
             os.remove(setup_filename)
@@ -73,7 +80,7 @@ def create_app(app_name):
     try:
         os.makedirs(base_path, exist_ok=False)
     except FileExistsError:
-        print(f"App '{app_name}' already exists.")
+        print(f"[ERROR] App '{app_name}' already exists.")
         return
 
     open(os.path.join(base_path, "__init__.py"), "w").close()
@@ -81,7 +88,7 @@ def create_app(app_name):
         f.write(f"""def main():
     print("Hello from {app_name}!")
 """)
-    print(f"App '{app_name}' created at: {base_path}")
+    print(f"[SUCCESS] App '{app_name}' created at: {base_path}")
 
 def run_dev_server():
     print("Starting dev server...")
