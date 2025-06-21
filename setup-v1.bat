@@ -46,6 +46,13 @@ echo import django
 echo django.setup()
 echo from django.contrib.auth import get_user_model
 echo User = get_user_model()
-echo if not User.objects.filter(username="admin").exists^():
+echo if not User.objects.filter(username="admin").exists():
 echo.    User.objects.create_superuser("admin", "admin@example.com", "admin123")
-echo.    print("Superuser created: admin / admin
+echo.    print("Superuser created: admin / admin123")
+echo else:
+echo.    print("Superuser 'admin' already exists.")
+) > prefiq\create_superuser.py
+
+python prefiq\create_superuser.py
+
+echo [SUCCESS] Project '%PROJECT_NAME%' setup completed
