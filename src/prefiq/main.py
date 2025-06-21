@@ -8,7 +8,7 @@ import requests
 VERSION = "Prefiq CLI v0.1.1"
 
 def download_file(url, filename):
-    print(f"[DEBUG] Starting download from URL: {url}")
+    print(f"[info] Starting download from URL: {url}")
     response = requests.get(url, stream=True)
     total = int(response.headers.get('content-length', 0))
     downloaded = 0
@@ -24,10 +24,10 @@ def download_file(url, filename):
                 sys.stdout.write(f"\r{bar}")
                 sys.stdout.flush()
     sys.stdout.write("\n")
-    print(f"[DEBUG] Download complete. File saved to: {filename}")
+    print(f"[info] Download complete. File saved to: {filename}")
 
 def run_setup(version, project_name):
-    print(f"[DEBUG] Running setup with version: {version}, project_name: {project_name}")
+    print(f"[info] Running setup with version: {version}, project_name: {project_name}")
     is_windows = platform.system() == "Windows"
     ext = ".bat" if is_windows else ".sh"
     setup_filename = f"setup-v{version}{ext}"
@@ -42,10 +42,10 @@ def run_setup(version, project_name):
 
     try:
         if is_windows:
-            print(f"[DEBUG] Detected Windows. Executing: {setup_filename} {project_name}")
+            print(f"[info] Detected Windows. Executing: {setup_filename} {project_name}")
             subprocess.run([setup_filename, project_name], shell=True, check=True)
         else:
-            print(f"[DEBUG] Detected Unix. Making script executable and running it.")
+            print(f"[info] Detected Unix. Making script executable and running it.")
             subprocess.run(["chmod", "+x", setup_filename], check=True)
             subprocess.run(["bash", setup_filename], check=True, env=env)
     except subprocess.CalledProcessError as e:
@@ -56,7 +56,7 @@ def run_setup(version, project_name):
             print("Cleaned up setup script.")
 
 def create_app(app_name):
-    print(f"[DEBUG] Creating app: {app_name}")
+    print(f"[info] Creating app: {app_name}")
     base_path = os.path.join(os.getcwd(), app_name)
     try:
         os.makedirs(base_path, exist_ok=False)
@@ -72,11 +72,11 @@ def create_app(app_name):
     print(f"[SUCCESS] App '{app_name}' created at: {base_path}")
 
 def run_dev_server():
-    print("[DEBUG] Starting dev server...")
+    print("[info] Starting dev server...")
     subprocess.run(["python", "manage.py", "runserver"], check=True)
 
 def main():
-    print("[DEBUG] CLI entry point invoked.")
+    print("[info] CLI entry point invoked.")
     if len(sys.argv) > 1 and sys.argv[1] in ["--version", "--v", "-v"]:
         print(VERSION)
         return
@@ -95,7 +95,7 @@ def main():
 
     args = parser.parse_args()
 
-    print(f"[DEBUG] Parsed args: {args}")
+    print(f"[info] Parsed args: {args}")
 
     if args.command == "install":
         run_setup(args.version, args.project)
