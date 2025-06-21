@@ -34,15 +34,13 @@ echo [INFO] Running migrations...
 python manage.py migrate
 
 echo [INFO] Creating Django superuser with default credentials...
-echo from django.contrib.auth import get_user_model > create_superuser.py
-echo User = get_user_model() >> create_superuser.py
-echo if not User.objects.filter(username^="admin").exists(): >> create_superuser.py
-echo     User.objects.create_superuser("admin", "admin@example.com", "admin123") >> create_superuser.py
-echo     print("Superuser created: admin / admin123") >> create_superuser.py
-echo else: >> create_superuser.py
-echo     print("Superuser 'admin' already exists.") >> create_superuser.py
-
-python manage.py shell < create_superuser.py
-del create_superuser.py
+python manage.py shell -c ^
+"from django.contrib.auth import get_user_model; ^
+User = get_user_model(); ^
+if not User.objects.filter(username='admin').exists(): ^
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin123'); ^
+    print('Superuser created: admin / admin123'); ^
+else: ^
+    print('Superuser \"admin\" already exists.')"
 
 echo [SUCCESS] Project '%PROJECT_NAME%' setup completed.
