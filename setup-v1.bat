@@ -37,17 +37,19 @@ echo [INFO] Creating Django superuser with default credentials...
 
 mkdir prefiq >nul 2>&1
 
-echo from django.conf import settings> prefiq\create_superuser.py
-echo import os>> prefiq\create_superuser.py
-echo os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')>> prefiq\create_superuser.py
-echo import django>> prefiq\create_superuser.py
-echo django.setup()>> prefiq\create_superuser.py
-echo from django.contrib.auth import get_user_model>> prefiq\create_superuser.py
-echo User = get_user_model()>> prefiq\create_superuser.py
-echo if not User.objects.filter(username='admin').exists():>> prefiq\create_superuser.py
-echo.    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')>> prefiq\create_superuser.py
-echo print('Superuser created with username: admin and password: admin123')>> prefiq\create_superuser.py
+(
+echo import os
+echo os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+echo import django
+echo django.setup()
+echo from django.contrib.auth import get_user_model
+echo User = get_user_model()
+echo if not User.objects.filter(username="admin").exists():
+echo.    User.objects.create_superuser("admin", "admin@example.com", "admin123")
+echo    print("Superuser created: admin / admin123")
+echo else:
+echo    print("Superuser 'admin' already exists.")
+) > prefiq\create_superuser.py
 
-python prefiq\create_superuser.py
 
 echo [SUCCESS] Project '%PROJECT_NAME%' setup completed!
