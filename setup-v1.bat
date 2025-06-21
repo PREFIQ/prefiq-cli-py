@@ -34,10 +34,10 @@ echo Running migrations...
 python manage.py migrate
 
 echo Creating Django superuser with default credentials...
-if exist src\prefiq\setup\create_superuser.py (
-    python src\prefiq\setup\create_superuser.py
+if exist prefiq\setup\create_superuser.py (
+    python prefiq\setup\create_superuser.py
 ) else (
-    echo Skipping superuser creation: file 'src\prefiq\setup\create_superuser.py' not found.
+    echo Skipping superuser creation: file 'prefiq\setup\create_superuser.py' not found.
 )
 
 echo Cleaning up setup script...
