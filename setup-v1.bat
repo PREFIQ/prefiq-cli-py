@@ -40,7 +40,7 @@ mkdir prefiq >nul 2>&1
 
 > prefiq\create_superuser.py (
     echo import os
-    echo os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings')
+    echo os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
     echo import django
     echo django.setup()
     echo from django.contrib.auth import get_user_model
