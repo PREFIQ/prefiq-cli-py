@@ -8,6 +8,20 @@ from prefiq.add_to_path import add_to_user_path
 
 VERSION = "Prefiq CLI v0.1.0"
 
+def uninstall_old_version():
+    try:
+        print("[INFO] Uninstalling old version of prefiq-cli-py...")
+        subprocess.run(["pip", "uninstall", "prefiq-cli-py", "-y"], check=True)
+    except subprocess.CalledProcessError:
+        print("[WARN] Unable to uninstall prefiq-cli-py. It may not be installed.")
+
+def install_latest_version():
+    try:
+        print("[INFO] Installing latest version of prefiq-cli-py...")
+        subprocess.run(["pip", "install", "--upgrade", "prefiq-cli-py"], check=True)
+    except subprocess.CalledProcessError:
+        print("[ERROR] Failed to install latest version of prefiq-cli-py.")
+
 def download_file(url, filename):
     response = requests.get(url, stream=True)
     total = int(response.headers.get('content-length', 0))
@@ -27,6 +41,9 @@ def download_file(url, filename):
     print(f"Saved to: {filename}")
 
 def run_setup(version, project_name):
+    uninstall_old_version()
+    install_latest_version()
+
     is_windows = platform.system() == "Windows"
     ext = ".bat" if is_windows else ".sh"
     setup_filename = f"setup-v{version}{ext}"
@@ -78,16 +95,13 @@ def main():
     parser = argparse.ArgumentParser(prog="prefiq", description="Prefiq CLI – Simple Setup Tool")
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # install command
     install_parser = subparsers.add_parser("install", help="Run setup script from GitHub")
     install_parser.add_argument("project", help="Project name")
     install_parser.add_argument("--version", "-v", dest="version", default="1", help="Setup script version (default=1)")
 
-    # new-app
     new_app_parser = subparsers.add_parser("new-app", help="Create a new app folder")
     new_app_parser.add_argument("name", help="App name")
 
-    # run
     subparsers.add_parser("run", help="Run the development server")
 
     args = parser.parse_args()
