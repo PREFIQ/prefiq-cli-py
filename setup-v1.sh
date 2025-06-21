@@ -32,5 +32,15 @@ django-admin startproject config . >/dev/null
 echo "🔧 Running migrations..."
 python3 manage.py migrate
 
-echo "👤 Creating Django superuser with default cr
+echo "👤 Creating Django superuser with default credentials..."
+if [ -f prefiq/create_superuser.py ]; then
+    python3 prefiq/create_superuser.py
+else
+    echo "⚠️  Skipping superuser creation: 'prefiq/create_superuser.py' not found."
+fi
 
+echo "🧹 Cleaning up setup script..."
+cd ..
+rm -f setup-v1.sh
+
+echo "✅ Project '$PROJECT_NAME' setup completed!"
