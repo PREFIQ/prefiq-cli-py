@@ -1,3 +1,4 @@
+# prefiq/create_superuser.py
 import argparse
 import subprocess
 import sys
